@@ -57,8 +57,44 @@ function onMessage(event){
   receivedData(value);
 }
 
+const char SKETCH_JS[] PROGMEM = R"=====(
+
 //////////////////////////////////////////////
-// **************** P5.js ***************** //
+// ***** WebSocket ****** //
+//////////////////////////////////////////////
+
+var websocket;
+
+function wsConnect() {
+  
+  // start a WebSocket
+  websocket = new WebSocket('ws://' + window.location.hostname + ':81/');
+  console.log("ws://" + window.location.hostname + ":81/");
+    
+  websocket.onopen = function(event) { onOpen(event) }
+  websocket.onclose = function(event) { onClose(event) }
+  websocket.onmessage = function(event) { onMessage(event) }
+  websocket.onerror = function(event) { console.log(event.data); }
+}
+
+function onOpen(event){
+  console.log('websocket opened ' + event.data);
+}
+
+function onClose(event){
+  console.log('websocket closed ' + event.data);
+  wsConnect();
+}
+
+function onMessage(event){
+  // console.log('websocket data: ' + event.data);
+  var value = String(event.data);
+  value = parseInt(value);
+  receivedData(value);
+}
+
+//////////////////////////////////////////////
+// ****** P5.js ******* //
 //////////////////////////////////////////////
 
 let system;
